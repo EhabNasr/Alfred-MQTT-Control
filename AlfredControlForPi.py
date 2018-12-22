@@ -38,6 +38,10 @@ def on_connect(mosq, obj, rc):
 
 def navigate_forward():
     print('I am here')
+    # true = white
+    # false = black
+    # 19 - > inside right
+    # 23 - > inside left
     while (GPIO.input(22)==False and GPIO.input(24)==False):
         if(GPIO.input(19)==True): #both white move forward
             GPIO.output(7,False)
@@ -67,8 +71,16 @@ def navigate_forward():
         else:
             GPIO.output(13,True)
             GPIO.output(15,True)
+    GPIO.output(7,False)
+    GPIO.output(11,False)
+    GPIO.output(13,False)
+    GPIO.output(15,False)
 
 def step_forward():
+    # true = black
+    # false = white
+    #22 -> out right
+    # 24 - > out left
     while(GPIO.input(22)==True or GPIO.input(24)==True): #Move forward till you pass the first black line
         if(GPIO.input(22)==True):
             GPIO.output(7,False)
@@ -85,87 +97,161 @@ def step_forward():
     print("step out done")
     navigate_forward()
 
+def rotate_right():
+    while(GPIO.input(24)==True):
+        GPIO.output(7,True)
+        GPIO.output(11,True)
+        GPIO.output(13,False)
+        GPIO.output(15,True)
+        sleep(0.1)
+    while(GPIO.input(24)==False):
+        GPIO.output(7,True)
+        GPIO.output(11,True)
+        GPIO.output(13,False)
+        GPIO.output(15,True)
+        sleep(0.1)
+    while(GPIO.input(24)==True):
+        GPIO.output(7,True)
+        GPIO.output(11,True)
+        GPIO.output(13,False)
+        GPIO.output(15,True)
+        sleep(0.1)
+    while(GPIO.input(23)==True):
+        GPIO.output(7,True)
+        GPIO.output(11,True)
+        GPIO.output(13,False)
+        GPIO.output(15,True)
+        sleep(0.1)
+    GPIO.output(7,False)
+    GPIO.output(11,False)
+    GPIO.output(13,False)
+    GPIO.output(15,False)
+
+def rotate_left():
+    while(GPIO.input(22)==True):
+        GPIO.output(7,False)
+        GPIO.output(11,True)
+        GPIO.output(13,True)
+        GPIO.output(15,True)
+        sleep(0.1)
+    while(GPIO.input(22)==False):
+        GPIO.output(7,False)
+        GPIO.output(11,True)
+        GPIO.output(13,True)
+        GPIO.output(15,True)
+        sleep(0.1)
+    while(GPIO.input(22)==True):
+        GPIO.output(7,False)
+        GPIO.output(11,True)
+        GPIO.output(13,True)
+        GPIO.output(15,True)
+        sleep(0.1)
+    while(GPIO.input(19)==True):
+        GPIO.output(7,False)
+        GPIO.output(11,True)
+        GPIO.output(13,True)
+        GPIO.output(15,True)
+        sleep(0.1)
+    GPIO.output(7,False)
+    GPIO.output(11,False)
+    GPIO.output(13,False)
+    GPIO.output(15,False)
+
+
 
 def step_right():
-    print("I'm here in the right")
-    while (GPIO.input(24)==True): #
-        GPIO.output(7,True)
-        GPIO.output(11,True)
-        GPIO.output(13,False)
-        GPIO.output(15,True)
-    print("Step 1 finished")
-    while (GPIO.input(24)==False):
-        GPIO.output(7,True)
-        GPIO.output(11,True)
-        GPIO.output(13,False)
-        GPIO.output(15,True)
-    print("Step 2 finished")
-    while (GPIO.input(24)==True):
-        GPIO.output(7,True)
-        GPIO.output(11,True)
-        GPIO.output(13,False)
-        GPIO.output(15,True)
-    while (GPIO.input(22)==True):
-        GPIO.output(7,True)
-        GPIO.output(11,True)
-        GPIO.output(13,False)
-        GPIO.output(15,True)
-    GPIO.output(7,False)
-    GPIO.output(11,False)
-    GPIO.output(13,False)
-    GPIO.output(15,False)
+    rotate_right()
+    sleep(0.3)
     navigate_forward()
-
 
 def step_left():
-    while (GPIO.input(22)==True):
-        GPIO.output(7,False)
-        GPIO.output(11,True)
-        GPIO.output(13,True)
-        GPIO.output(15,True)
-    while (GPIO.input(22)==False):
-        GPIO.output(7,False)
-        GPIO.output(11,True)
-        GPIO.output(13,True)
-        GPIO.output(15,True)
-    while (GPIO.input(22)==True):
-        GPIO.output(7,False)
-        GPIO.output(11,True)
-        GPIO.output(13,True)
-        GPIO.output(15,True)
-    while (GPIO.input(24)==True):
-        GPIO.output(7,False)
-        GPIO.output(11,True)
-        GPIO.output(13,True)
-        GPIO.output(15,True)
+    rotate_left()
+    sleep(0.3)
+    navigate_forward()
+
+
+def navigate_backward():
+    # true = white
+    # false = black
+    # 19 - > inside right
+    # 23 - > inside left
+    while (GPIO.input(22)==False and GPIO.input(24)==False):
+        if(GPIO.input(19)==False): #both white move forward
+            GPIO.output(7,True)
+            GPIO.output(11,False)
+        else:
+            GPIO.output(7,True)
+            GPIO.output(11,True)
+        if(GPIO.input(23)==False): #turn right
+            GPIO.output(13,True)
+            GPIO.output(15,False)
+        else:
+            GPIO.output(13,True)
+            GPIO.output(15,True)
+            GPIO.output(13,True)
+            GPIO.output(15,False)
+        if(GPIO.input(19)==True and GPIO.input(23)==True):
+            GPIO.output(7,True)
+            GPIO.output(11,False)
+        if(GPIO.input(19)==False and GPIO.input(23)==False):
+            break
+    print('Reached Destination')
+    while(GPIO.input(22)==False or GPIO.input(24)==False):
+        if(GPIO.input(22)==False):
+            GPIO.output(7,True)
+            GPIO.output(11,False)
+        else:
+            GPIO.output(7,True)
+            GPIO.output(11,True)
+        if(GPIO.input(24)==False):
+            GPIO.output(13,True)
+            GPIO.output(15,False)
+        else:
+            GPIO.output(13,True)
+            GPIO.output(15,True)
     GPIO.output(7,False)
     GPIO.output(11,False)
     GPIO.output(13,False)
     GPIO.output(15,False)
-    navigate_forward()
-
 
 def step_back():
-    while (GPIO.input(24)==True):
-        GPIO.output(7,False)
-        GPIO.output(11,True)
-        GPIO.output(13,True)
-        GPIO.output(15,False)
-    while (GPIO.input(24)==False):
-        GPIO.output(7,False)
-        GPIO.output(11,True)
-        GPIO.output(13,True)
-        GPIO.output(15,False)
-    while (GPIO.input(24)==True):
-        GPIO.output(7,False)
-        GPIO.output(11,True)
-        GPIO.output(13,True)
-        GPIO.output(15,False)
-    GPIO.output(7,False)
-    GPIO.output(11,False)
-    GPIO.output(13,False)
-    GPIO.output(15,False)
+    rotate_right()
+    sleep(0.1)
+    navigate_backward()
+    sleep(0.1)
+    rotate_right()
+    sleep(0.1)
     navigate_forward()
+    # while (GPIO.input(24)==True):
+    #     GPIO.output(7,False)
+    #     GPIO.output(11,True)
+    #     GPIO.output(13,True)
+    #     GPIO.output(15,False)
+    # while (GPIO.input(24)==False):
+    #     GPIO.output(7,False)
+    #     GPIO.output(11,True)
+    #     GPIO.output(13,True)
+    #     GPIO.output(15,False)
+    # while (GPIO.input(24)==True):
+    #     GPIO.output(7,False)
+    #     GPIO.output(11,True)
+    #     GPIO.output(13,True)
+    #     GPIO.output(15,False)
+    # while (GPIO.input(24)==False):
+    #     GPIO.output(7,False)
+    #     GPIO.output(11,True)
+    #     GPIO.output(13,True)
+    #     GPIO.output(15,False)
+    # while (GPIO.input(24)==True):
+    #     GPIO.output(7,False)
+    #     GPIO.output(11,True)
+    #     GPIO.output(13,True)
+    #     GPIO.output(15,False)
+    # GPIO.output(7,False)
+    # GPIO.output(11,False)
+    # GPIO.output(13,False)
+    # GPIO.output(15,False)
+    # navigate_forward()
 
 
 def decide_and_move(decision):
@@ -192,26 +278,37 @@ def on_message(mosq, obj, msg):
     global command_orientation
     global decision
     print("message Received")
-    print(msg.payload)
+    print(str(msg.payload)[0])
     if msg.topic == "alfred/walk/1":
-        if str(msg.payload)[0] == 'u':
+        if str(msg.payload)[0] == 'T':
             command_orientation = 90
             # print('*Moving forward*')
-        elif str(msg.payload)[0] == 'r':
+        elif str(msg.payload)[0] == 'R':
             command_orientation = 0
             # print('*Rotating right*')
-        elif str(msg.payload)[0] == 'l':
+        elif str(msg.payload)[0] == 'L':
             command_orientation = 180
             # print('*Rotating left*')
-        elif str(msg.payload)[0] == 'd':
+        elif str(msg.payload)[0] == 'D':
             command_orientation = 270
             # print('*Rotating downward*')
+        elif str(msg.payload)[0] == 'C':
+            mqttc.publish("ack/here/1","1")
+            return
+            # print('*Rotating downward*')
         elif str(msg.payload)[0] == 'a': #testing
-            step_left()
+            rotate_left()
             return
             # print('*Rotating downward*')
         elif str(msg.payload)[0] == 's': #testing
-            step_right()
+            rotate_right()
+            return
+        elif str(msg.payload)[0] == 'n': #testing
+            navigate_forward()
+            return
+            # print('*Rotating downward*')
+        elif str(msg.payload)[0] == 'b': #testing
+            navigate_backward()
             return
             # print('*Rotating downward*')
     else:
